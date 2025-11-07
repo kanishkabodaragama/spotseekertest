@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing PHP dependencies..."
+      - composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-gd
+      - echo "Installing Node.js dependencies..."
+      - npm install
+
+  pre_build:
+    commands:
+      - echo "Running Laravel pre-build tasks..."
+      - cp .env.example .env
+      - php artisan key:generate
+      # Add any other pre-build tasks specific to your Laravel application
+
+  post_build:
+    commands:
+      - echo "Building the Laravel application..."
+      - php artisan config:cache
+      - php artisan route:cache
+      - php artisan view:clear
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: public
